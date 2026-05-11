@@ -23,4 +23,3 @@ int generic_vector_get_capacity(GENERIC_VECTOR hVector);
 void generic_vector_destroy(GENERIC_VECTOR* phVector);
 
 #endif
-

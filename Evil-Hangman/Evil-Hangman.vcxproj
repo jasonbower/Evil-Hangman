@@ -132,7 +132,9 @@
   <ItemGroup>
     <ClCompile Include="associative_array.c" />
     <ClCompile Include="generic_vector.c" />
-    <ClCompile Include="main.c" />
+    <ClCompile Include="main.c">
+      <SDLCheck Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</SDLCheck>
+    </ClCompile>
     <ClCompile Include="my_string.c" />
   </ItemGroup>
   <ItemGroup>

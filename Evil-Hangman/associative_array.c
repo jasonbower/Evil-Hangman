@@ -158,7 +158,7 @@ static Node* avl_insert(Node* root, MY_STRING key, MY_STRING word, Status* pStat
 
 	comparison = my_string_compare(key, root->key);
 
-	if (comparison < 0)	root->left = avl_insert(root->left, key, word, pStatus);
+	if		(comparison < 0)	root->left  = avl_insert(root->left,  key, word, pStatus);
 	else if (comparison > 0)	root->right = avl_insert(root->right, key, word, pStatus);
 	else
 	{
@@ -170,11 +170,11 @@ static Node* avl_insert(Node* root, MY_STRING key, MY_STRING word, Status* pStat
 	root->height = 1 + avl_get_max_height(root->left, root->right);
 	balance_factor = avl_get_balance(root);
 
-	if (balance_factor > 1 && my_string_compare(key, root->left->key) < 0)	return avl_rotate_right(root);
+	if (balance_factor >  1 && my_string_compare(key, root->left->key)  < 0)	return avl_rotate_right(root);
 
 	if (balance_factor < -1 && my_string_compare(key, root->right->key) > 0)	return avl_rotate_left(root);
 
-	if (balance_factor > 1 && my_string_compare(key, root->left->key) > 0)
+	if (balance_factor >  1 && my_string_compare(key, root->left->key)  > 0)
 	{
 		root->left = avl_rotate_left(root->left);
 
@@ -201,7 +201,7 @@ static Node* avl_search(Node* root, MY_STRING key)
 
 	if (comparison == 0)	return root;
 
-	if (comparison < 0)	return avl_search(root->left, key);
+	if (comparison < 0)		return avl_search(root->left, key);
 
 	return avl_search(root->right, key);
 }
@@ -215,8 +215,8 @@ static int avl_get_height(Node* root)
 
 static int avl_get_max_height(Node* left, Node* right)
 {
-	const int left_height = avl_get_height(left);
-	const int right_height = avl_get_height(right);
+	int left_height  = avl_get_height(left);
+	int right_height = avl_get_height(right);
 
 	if (left_height > right_height)	return left_height;
 

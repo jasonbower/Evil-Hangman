@@ -36,11 +36,15 @@ MY_STRING my_string_init_default(void)
 
 MY_STRING my_string_init_c_string(const char* c_string)
 {
-	My_string* pString = (My_string*)malloc(sizeof(My_string));
+	My_string* pString;
 	int size = 0;
 	int i;
 
-	if (pString == NULL || c_string == NULL)	return NULL;
+	if (c_string == NULL)	return NULL;
+
+	pString = (My_string*)malloc(sizeof(My_string));
+
+	if (pString == NULL)	return NULL;
 
 	while (c_string[size] != '\0')	size++;
 
@@ -63,14 +67,14 @@ MY_STRING my_string_init_c_string(const char* c_string)
 
 int my_string_get_capacity(MY_STRING hMy_string)
 {
-	const My_string* pString = (My_string*)hMy_string;
+	My_string* pString = (My_string*)hMy_string;
 
 	return pString->capacity;
 }
 
 int my_string_get_size(MY_STRING hMy_string)
 {
-	const My_string* pString = (My_string*)hMy_string;
+	My_string* pString = (My_string*)hMy_string;
 
 	return pString->size;
 }
@@ -181,7 +185,7 @@ Status my_string_pop_back(MY_STRING hMy_string)
 
 char* my_string_at(MY_STRING hMy_string, int index)
 {
-	const My_string* pString = (My_string*)hMy_string;
+	My_string* pString = (My_string*)hMy_string;
 
 	if (pString == NULL || index < 0 || index >= pString->size)	return NULL;
 
@@ -243,7 +247,7 @@ Status my_string_concat(MY_STRING hResult, MY_STRING hAppend)
 
 Boolean my_string_empty(MY_STRING hMy_string)
 {
-	const My_string* pString = (My_string*)hMy_string;
+	My_string* pString = (My_string*)hMy_string;
 
 	if (pString == NULL)	return TRUE;
 
@@ -346,11 +350,12 @@ void my_string_destroy(MY_STRING* phMy_string)
 	free(pString);
 	*phMy_string = NULL;
 }
+
 ///// HELPER FUNCTIONS /////
 
 static Status my_string_resize(My_string* pString)
 {
-	const int new_capacity = pString->capacity * 2;
+	int new_capacity = pString->capacity * 2;
 	char* temp;
 	int i;
 

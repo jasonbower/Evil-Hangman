@@ -37,7 +37,7 @@ GENERIC_VECTOR generic_vector_init_default(ITEM(*init_copy)(ITEM), void (*destro
 
 Boolean generic_vector_is_empty(GENERIC_VECTOR hVector)
 {
-	const Generic_vector* pVector = (Generic_vector*)hVector;
+	Generic_vector* pVector = (Generic_vector*)hVector;
 
 	return (Boolean)(pVector->size <= 0);
 }
@@ -74,7 +74,7 @@ Status generic_vector_push_back(GENERIC_VECTOR hVector, ITEM hItem)
 
 int generic_vector_get_size(GENERIC_VECTOR hVector)
 {
-	const Generic_vector* pVector = (Generic_vector*)hVector;
+	Generic_vector* pVector = (Generic_vector*)hVector;
 
 	return pVector->size;
 }
@@ -88,7 +88,7 @@ int generic_vector_get_capacity(GENERIC_VECTOR hVector)
 
 ITEM* generic_vector_at(GENERIC_VECTOR hVector, int index)
 {
-	const Generic_vector* pVector = (Generic_vector*)hVector;
+	Generic_vector* pVector = (Generic_vector*)hVector;
 
 	if (index < 0 || index >= pVector->size)	return NULL;
 
@@ -109,8 +109,12 @@ Status generic_vector_pop_back(GENERIC_VECTOR hVector)
 
 void generic_vector_destroy(GENERIC_VECTOR* phVector)
 {
-	const Generic_vector* pVector = (Generic_vector*)*phVector;
+	Generic_vector* pVector;
 	int i;
+
+	if (phVector == NULL || *phVector == NULL)	return;
+
+	pVector = (Generic_vector*)*phVector;
 
 	for (i = 0; i < pVector->size; i++)	pVector->destroy(&pVector->data[i]);
 
