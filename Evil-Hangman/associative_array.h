@@ -13,7 +13,7 @@ Status associative_array_insert(ASSOCIATIVE_ARRAY hArray, MY_STRING key, MY_STRI
 
 GENERIC_VECTOR associative_array_find(ASSOCIATIVE_ARRAY hArray, MY_STRING key);
 
-GENERIC_VECTOR associative_array_get_largest_family(ASSOCIATIVE_ARRAY hArray, MY_STRING winning_key);
+GENERIC_VECTOR associative_array_get_largest_family(ASSOCIATIVE_ARRAY hArray, MY_STRING winning_key);	// Copies the key for the largest word family into winning_key.
 
 void associative_array_destroy(ASSOCIATIVE_ARRAY* phArray);
 

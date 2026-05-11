@@ -26,9 +26,9 @@ static Node* avl_search(Node* root, MY_STRING key);
 static int avl_get_height(Node* root);
 static int avl_get_max_height(Node* left, Node* right);
 static int avl_get_balance(Node* root);
-static Node* avl_rotate_right(Node* root);
-static Node* avl_rotate_left(Node* root);
-static void avl_find_largest_family(Node* root, Node** ppBestNode);
+static Node* avl_rotate_right(Node* root);							// Performs a right rotation and updates node heights.
+static Node* avl_rotate_left(Node* root);							// Performs a left rotation and updates node heights.
+static void avl_find_largest_family(Node* root, Node** ppBestNode);	// Traverses the tree and stores the node with the largest word vector in ppBestNode.
 static void avl_destroy_node(Node* pNode);
 static void avl_destroy(Node* root);
 
@@ -40,7 +40,7 @@ ASSOCIATIVE_ARRAY associative_array_init_default(void)
 
 	if (pArray == NULL)
 	{
-		printf("Error: Failed to allocate memory for Associative Array object\n");
+		fprintf(stderr, "Error 3: failed to allocate memory for Associative_array object in associative_array_init_default\n");
 		exit(1);
 	}
 
@@ -56,7 +56,7 @@ GENERIC_VECTOR associative_array_find(ASSOCIATIVE_ARRAY hArray, MY_STRING key)
 
 	if (hArray == NULL || key == NULL)
 	{
-		printf("Error: Null parameter passed to associative_array_find.\n");
+		fprintf(stderr, "Error 4: null parameter passed to associative_array_find\n");
 		exit(1);
 	}
 
@@ -88,14 +88,14 @@ GENERIC_VECTOR associative_array_get_largest_family(ASSOCIATIVE_ARRAY hArray, MY
 
 	if (hArray == NULL || winning_key == NULL)
 	{
-		printf("Error: Null parameter passed to associative_array_get_largest_family.\n");
+		fprintf(stderr, "Error 5: null parameter passed to associative_array_get_largest_family\n");
 		exit(1);
 	}
 
 	pArray = (Associative_array*)hArray;
 	avl_find_largest_family(pArray->root, &bestNode);
 
-	if (bestNode == NULL || my_string_assignment(bestNode->key, winning_key) == FAILURE)	return NULL;
+	if (bestNode == NULL || my_string_assignment(bestNode->key, winning_key) == FAILURE)	return NULL;	// Copies the largest family's key into winning_key.
 
 	return bestNode->words;
 }
@@ -130,7 +130,8 @@ static Node* avl_create_node(MY_STRING key, MY_STRING word)
 
 	if (new_node == NULL)
 	{
-		printf("Error: Failed to allocate memory for Node object\n");
+		fprintf(stderr, "Error 6: failed to allocate memory for Node object in avl_create_node\n");
+		avl_destroy_node(new_node);
 		exit(1);
 	}
 
@@ -160,7 +161,7 @@ static Node* avl_insert(Node* root, MY_STRING key, MY_STRING word, Status* pStat
 
 	if		(comparison < 0)	root->left  = avl_insert(root->left,  key, word, pStatus);
 	else if (comparison > 0)	root->right = avl_insert(root->right, key, word, pStatus);
-	else
+	else	// Matching keys belong to the same word family.
 	{
 		if (generic_vector_push_back(root->words, word) == FAILURE)	*pStatus = FAILURE;
 
@@ -170,6 +171,7 @@ static Node* avl_insert(Node* root, MY_STRING key, MY_STRING word, Status* pStat
 	root->height = 1 + avl_get_max_height(root->left, root->right);
 	balance_factor = avl_get_balance(root);
 
+	// Rebalance the AVL tree if inserting this key made it unbalanced.
 	if (balance_factor >  1 && my_string_compare(key, root->left->key)  < 0)	return avl_rotate_right(root);
 
 	if (balance_factor < -1 && my_string_compare(key, root->right->key) > 0)	return avl_rotate_left(root);
@@ -282,7 +284,5 @@ static void avl_destroy(Node* root)
 
 	avl_destroy(root->left);
 	avl_destroy(root->right);
-	my_string_destroy(&root->key);
-	generic_vector_destroy(&root->words);
-	free(root);
+	avl_destroy_node(root);
 }

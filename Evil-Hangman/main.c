@@ -28,7 +28,7 @@ MY_STRING build_initial_word_family(int word_length);
 char get_guess(MY_STRING guessed_letters);
 int already_guessed(MY_STRING guessed_letters, char guess);
 int word_family_changed(MY_STRING old_family, MY_STRING new_family);
-Status get_word_key_value(MY_STRING current_word_family, MY_STRING new_key, MY_STRING word, char guess);
+Status get_word_key_value(MY_STRING current_word_family, MY_STRING new_key, MY_STRING word, char guess);	// Builds the word-family key that would result from applying guess to word.
 int word_is_solved(MY_STRING current_word_family);
 char ask_to_play_again(void);
 MY_STRING get_losing_word(GENERIC_VECTOR current_words);
@@ -65,7 +65,7 @@ void load_dictionary(GENERIC_VECTOR word_buckets[])
 
 	if (fp == NULL)
 	{
-		printf("Error: could not open dictionary.txt\n");
+		fprintf(stderr, "Error 7: could not open dictionary.txt in load_dictionary\n");
 		exit(1);
 	}
 
@@ -75,7 +75,7 @@ void load_dictionary(GENERIC_VECTOR word_buckets[])
 
 		if (word_buckets[i] == NULL)
 		{
-			printf("Error: failed to initialize vector %d\n", i);
+			fprintf(stderr, "Error 8: failed to initialize GENERIC_VECTOR object at bucket %d in load_dictionary\n", i);
 			fclose(fp);
 			exit(1);
 		}
@@ -85,7 +85,7 @@ void load_dictionary(GENERIC_VECTOR word_buckets[])
 
 	if (hWord == NULL)
 	{
-		printf("Error: failed to initialize MY_STRING\n");
+		fprintf(stderr, "Error 9: failed to initialize MY_STRING object in load_dictionary\n");
 		fclose(fp);
 		exit(1);
 	}
@@ -94,11 +94,12 @@ void load_dictionary(GENERIC_VECTOR word_buckets[])
 	{
 		length = my_string_get_size(hWord);
 
+		// Store each word in the bucket matching its length.
 		if (length >= 1 && length <= MAX_WORD_LENGTH)
 		{
 			if (generic_vector_push_back(word_buckets[length], hWord) == FAILURE)
 			{
-				printf("Error: failed to push word into bucket\n");
+				fprintf(stderr, "Error 10: failed to push word into bucket in load_dictionary\n");
 				my_string_destroy(&hWord);
 				fclose(fp);
 				destroy_dictionary(word_buckets);
@@ -114,19 +115,14 @@ void load_dictionary(GENERIC_VECTOR word_buckets[])
 void play_one_game(GENERIC_VECTOR word_buckets[])
 {
 	GENERIC_VECTOR current_words;
-	GENERIC_VECTOR largest_family;
 	int word_length;
 	int number_of_guesses;
 	int remaining_guesses;
-	int i;
 	char running_total_choice;
-	char guess;
 	MY_STRING current_word_family;
 	MY_STRING guessed_letters;
 	MY_STRING new_key;
-	MY_STRING old_word_family;
 	MY_STRING losing_word;
-	ASSOCIATIVE_ARRAY hArray;
 
 	word_length = get_word_length(word_buckets);
 	number_of_guesses = get_number_of_guesses();
@@ -136,7 +132,7 @@ void play_one_game(GENERIC_VECTOR word_buckets[])
 
 	if (current_words == NULL)
 	{
-		printf("Error: failed to copy current word list\n");
+		fprintf(stderr, "Error 11: failed to copy GENERIC_VECTOR object in play_one_game\n");
 		destroy_dictionary(word_buckets);
 		exit(1);
 	}
@@ -147,7 +143,7 @@ void play_one_game(GENERIC_VECTOR word_buckets[])
 
 	if (current_word_family == NULL || guessed_letters == NULL || new_key == NULL)
 	{
-		printf("Error: failed to initialize game state\n");
+		fprintf(stderr, "Error 12: failed to initialize MY_STRING object in play_one_game\n");
 		destroy_game_state(&current_words, &current_word_family, &guessed_letters, &new_key);
 		destroy_dictionary(word_buckets);
 		exit(1);
@@ -165,7 +161,8 @@ void play_one_game(GENERIC_VECTOR word_buckets[])
 		}
 	}
 
-	if (word_is_solved(current_word_family))	printf("\nYou win! The word was %s\n", my_string_c_str(current_word_family));
+	if (word_is_solved(current_word_family))	
+		printf("\nYou win! The word was %s\n", my_string_c_str(current_word_family));
 	else
 	{
 		losing_word = get_losing_word(current_words);
@@ -197,7 +194,7 @@ Status play_one_turn(GENERIC_VECTOR* pCurrent_words, MY_STRING current_word_fami
 
 	if (old_word_family == NULL)
 	{
-		printf("Error: failed to copy current word family\n");
+		fprintf(stderr, "Error 13: failed to copy MY_STRING object in play_one_turn\n");
 
 		return FAILURE;
 	}
@@ -206,19 +203,20 @@ Status play_one_turn(GENERIC_VECTOR* pCurrent_words, MY_STRING current_word_fami
 
 	if (hArray == NULL)
 	{
-		printf("Error: failed to initialize associative array\n");
+		fprintf(stderr, "Error 14: failed to initialize ASSOCIATIVE_ARRAY object in play_one_turn\n");
 		my_string_destroy(&old_word_family);
 
 		return FAILURE;
 	}
 
+	// Partition current_words into word families based on the player's guess.
 	for (i = 0; i < generic_vector_get_size(*pCurrent_words); i++)
 	{
 		word = *(MY_STRING*)generic_vector_at(*pCurrent_words, i);
 
 		if (get_word_key_value(current_word_family, new_key, word, guess) == FAILURE)
 		{
-			printf("Error: failed to generate word key\n");
+			fprintf(stderr, "Error 15: failed to generate word key in play_one_turn\n");
 			associative_array_destroy(&hArray);
 			my_string_destroy(&old_word_family);
 
@@ -227,7 +225,7 @@ Status play_one_turn(GENERIC_VECTOR* pCurrent_words, MY_STRING current_word_fami
 
 		if (associative_array_insert(hArray, new_key, word) == FAILURE)
 		{
-			printf("Error: failed to insert into associative array\n");
+			fprintf(stderr, "Error 16: failed to insert word into ASSOCIATIVE_ARRAY object in play_one_turn\n");
 			associative_array_destroy(&hArray);
 			my_string_destroy(&old_word_family);
 
@@ -249,7 +247,7 @@ Status play_one_turn(GENERIC_VECTOR* pCurrent_words, MY_STRING current_word_fami
 
 	if (*pCurrent_words == NULL)
 	{
-		printf("Error: failed to copy largest family\n");
+		fprintf(stderr, "Error 17: failed to copy GENERIC_VECTOR object in play_one_turn\n");
 		associative_array_destroy(&hArray);
 		my_string_destroy(&old_word_family);
 
@@ -447,7 +445,7 @@ char get_guess(MY_STRING guessed_letters)
 				{
 					if (my_string_push_back(guessed_letters, guess) == FAILURE)
 					{
-						printf("Error: failed to store guessed letter\n");
+						fprintf(stderr, "Error 18: failed to push char into MY_STRING object in get_guess\n");
 						exit(1);
 					}
 
@@ -574,7 +572,9 @@ GENERIC_VECTOR copy_vector_of_words(GENERIC_VECTOR hVector)
 	int i;
 	MY_STRING word;
 
-	if (copy == NULL)	return NULL;
+	if (hVector == NULL)	return NULL;
+
+	if (copy == NULL)		return NULL;
 
 	for (i = 0; i < generic_vector_get_size(hVector); i++)
 	{

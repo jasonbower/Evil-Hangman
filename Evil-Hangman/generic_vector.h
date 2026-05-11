@@ -6,7 +6,7 @@
 
 typedef void* GENERIC_VECTOR;
 
-GENERIC_VECTOR generic_vector_init_default(ITEM(*init_copy)(ITEM), void (*destroy)(ITEM*));
+GENERIC_VECTOR generic_vector_init_default(ITEM(*init_copy)(ITEM), void (*destroy)(ITEM*));	// init_copy and destroy define how the vector copies and frees stored items.
 
 Status generic_vector_push_back(GENERIC_VECTOR hVector, ITEM hItem);
 

@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="Evil-Hangman/Evil-Hangman.vcxproj" />
+  <Project Path="Evil-Hangman/Evil-Hangman.vcxproj" Id="e13849a1-d777-4215-a229-62e533339afa" />
 </Solution>

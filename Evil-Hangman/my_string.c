@@ -88,7 +88,7 @@ int my_string_compare(MY_STRING hLeft_string, MY_STRING hRight_string)
 
 	if (hLeft_string == NULL || hRight_string == NULL)
 	{
-		printf("Error: Null parameter passed to my_string_compare.\n");
+		fprintf(stderr, "Error 1: null parameter passed to my_string_compare\n");
 		exit(1);
 	}
 
@@ -321,7 +321,7 @@ void my_string_swap(MY_STRING hLeft, MY_STRING hRight)
 
 	if (pLeft == NULL || pRight == NULL)
 	{
-		printf("Error: Failed to swap strings\n");
+		fprintf(stderr, "Error 2: null parameter passed to my_string_swap\n");
 		exit(1);
 	}
 
