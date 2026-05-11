@@ -49,7 +49,7 @@ int main(void)
 
 	destroy_dictionary(word_buckets);
 
-	return 0;
+	return 0; 
 }
 
 ///// HELPER FUNCTIONS /////
